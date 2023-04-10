@@ -30,6 +30,9 @@ class Product
     #[ORM\ManyToMany(targetEntity: Order::class, inversedBy: 'products')]
     private Collection $orders;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -108,6 +111,18 @@ class Product
     public function removeOrder(Order $order): self
     {
         $this->orders->removeElement($order);
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }
