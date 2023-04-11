@@ -1,0 +1,2 @@
+[all]
+example-host ansible_host=0.0.0.0 ansible_port=22 ansible_user=user
