@@ -1,3 +1,12 @@
+- name: Create /app directory
+  ansible.builtin.file:
+    path: /app
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+  become: true
+
 - name: Copy application to /app
   ansible.posix.synchronize:
     src: ../app

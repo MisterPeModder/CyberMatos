@@ -1,0 +1,13 @@
+- name: Perform update
+  ansible.builtin.apt:
+    upgrade: "safe"
+
+- name: Install base APT packages
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gpg
+      - lsb-release
+      - software-properties-common

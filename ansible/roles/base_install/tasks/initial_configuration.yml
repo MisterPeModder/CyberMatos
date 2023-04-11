@@ -1,0 +1,7 @@
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "cybermatos-development-{{ inventory_hostname }}"
+
+- name: Set timezone to Europe/Paris
+  community.general.timezone:
+    name: "Europe/Paris"
