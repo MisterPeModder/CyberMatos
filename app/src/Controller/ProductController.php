@@ -7,6 +7,7 @@ use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,7 +17,25 @@ class ProductController extends AbstractController
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
     public function index(ProductRepository $productRepository): Response
     {
-        return $this->render('product/index.html.twig', [
+        $products = $productRepository->findAll();
+        $jsonData = [];
+        foreach ($products as $product) {
+            $jsonData[] = [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'description' => $product->getDescription(),
+                'photo' => $product->getImage(),
+                'price' => $product->getPrice()
+            ];
+        }
+
+        return $this->json($jsonData);
+    }
+
+    #[Route('/list', name: 'app_product_list', methods: ['GET'])]
+    public function list(ProductRepository $productRepository): Response
+    {
+        return $this->render('product/list.html.twig', [
             'products' => $productRepository->findAll(),
         ]);
     }
@@ -41,7 +60,22 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
+
+    #[Route('/{id}', name: 'app_product_json', methods: ['GET'])]
+    public function productId(Product $product): Response
+    {
+        $jsonData = [
+            'id' => $product->getId(),
+            'name' => $product->getName(),
+            'description' => $product->getDescription(),
+            'photo' => $product->getImage(),
+            'price' => $product->getPrice()
+        ];
+
+        return $this->json($jsonData);
+    }
+
+    #[Route('/id/{id}', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
         return $this->render('product/show.html.twig', [
