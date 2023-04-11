@@ -2,6 +2,14 @@
 
 CyberMatos is a toy e-commerce site built with Symfony and deployed with Ansible.
 
+## Deployment
+
+- Ansible
+- Debian 11  
+`ansible-galaxy collection install ansible.posix`
+`ansible-galaxy collection install community.general`
+
+## Entity Relationship Diagrams
 # Setup
 
 1. Import the cybermatos.sql file into a mariaDB database.

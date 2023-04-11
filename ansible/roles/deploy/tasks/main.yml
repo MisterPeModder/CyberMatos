@@ -1,0 +1,23 @@
+- name: Copy application to /app
+  ansible.posix.synchronize:
+    src: ../app
+    dest: /
+
+- name: Install Symfony dependencies
+  community.general.composer:
+    command: require
+    arguments: symfony/requirements-checker
+    working_dir: /app
+
+#- name: Install systemd service
+#  ansible.builtin.copy:
+#    src: my-awesome-app.service
+#    dest: /etc/systemd/system/my-awesome-app.service
+#    owner: root
+#    group: root
+#
+#- name: Start systemd service
+#  ansible.builtin.systemd:
+#    name: my-awesome-app
+#    enabled: true
+#    state: started

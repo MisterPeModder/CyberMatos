@@ -1,0 +1,8 @@
+---
+- hosts: all
+  name: Deploy
+  roles:
+    - role: base_install
+      become: true
+      become_method: su
+    - deploy
