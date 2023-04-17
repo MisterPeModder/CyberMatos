@@ -6,8 +6,7 @@ CyberMatos is a toy e-commerce site built with Symfony and deployed with Ansible
 
 - Ansible
 - Debian 11  
-`ansible-galaxy collection install ansible.posix`
-`ansible-galaxy collection install community.general`
+`ansible-galaxy collection install ansible.posix community.general community.mysql`
 
 ## Entity Relationship Diagrams
 # Setup

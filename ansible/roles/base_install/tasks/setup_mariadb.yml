@@ -1,0 +1,47 @@
+- name: Install MariaDB
+  ansible.builtin.apt:
+    pkg:
+      - mariadb-client
+      - mariadb-server
+      - default-libmysqlclient-dev
+    state: present
+
+- name: Install Python mysqlclient
+  ansible.builtin.pip:
+    name: mysqlclient
+    state: present
+
+- name: Set ~/.my.cnf file
+  template: src=my.cnf.j2 dest=/root/.my.cnf mode=0600
+
+- name: Start MariaDB service
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+  # mysql_secure_installation
+- name: Update MariaDB root password
+  community.mysql.mysql_user: name=root host={{item}} password={{mysql_root_password}}
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+#- name: Set ~/.my.cnf file
+#  template: src=dotmy.cnf.j2 dest=/root/.my.cnf mode=0600
+
+  # mysql_secure_installation
+- name: Delete anonymous MySQL user
+  community.mysql.mysql_user: name="" host={{item}} state=absent
+  with_items:
+    - localhost
+    - "{{ansible_nodename}}"
+
+  # mysql_secure_installation
+- name: Delete Hostname based MySQL user
+  community.mysql.mysql_user: name=root host="{{ansible_nodename}}" state=absent
+
+  # mysql_secure_installation
+- name: Remove MySQL test database
+  community.mysql.mysql_db: name=test state=absent

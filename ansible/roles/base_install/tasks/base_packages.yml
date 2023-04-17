@@ -10,4 +10,5 @@
       - curl
       - gpg
       - lsb-release
+      - pip
       - software-properties-common
