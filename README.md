@@ -37,19 +37,20 @@ ansible-galaxy collection install ansible.posix community.general community.mysq
 1. Copy the `app/.env` file to `app/.env.local` and fill the variables with your own values.
 2. Copy the `ansible/group_vars/all.example.yml` file to `ansible/group_vars/all.yml` and fill the variables with your own values.
     - **optional**: You can encrypt this file using the command `ansible-vault encrypt ansible/group_vars/all.yml`
-3. Create an inventory file specifying the target machine(s) IP address(es) and the SSH user(s).
+3. When using Vault, place your password in a file named `.passwd` in the `ansible` directory.
+4. Create an inventory file specifying the target machine(s) IP address(es) and the SSH user(s).
 ```ini
 # file: hosts
 [all]
 example-host ansible_host=0.0.0.0 ansible_port=22 ansible_user=user
 ```
-4. **From the ansible directory**, launch the playbook with the following command:
+5. **From the ansible directory**, launch the playbook with the following command:
 ```sh
 ansible-playbook -i hosts playbook.yml
 ```
 (where `hosts` is the inventory file path)
-5. Take a coffee break ☕, this may take a while.
-6. Enjoy!
+6. Take a coffee break ☕, this may take a while.
+7. Enjoy!
 
 ## Application Structure
 
