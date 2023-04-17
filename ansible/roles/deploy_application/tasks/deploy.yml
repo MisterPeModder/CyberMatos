@@ -16,17 +16,31 @@
   community.general.composer:
     command: require
     arguments: symfony/requirements-checker
+    classmap_authoritative: true
+    no_dev: true
     working_dir: /app
 
-#- name: Install systemd service
-#  ansible.builtin.copy:
-#    src: my-awesome-app.service
-#    dest: /etc/systemd/system/my-awesome-app.service
-#    owner: root
-#    group: root
-#
-#- name: Start systemd service
-#  ansible.builtin.systemd:
-#    name: my-awesome-app
-#    enabled: true
-#    state: started
+- name: Clear Symfony cache
+  ansible.builtin.shell: php bin/console cache:clear
+  args:
+    chdir: /app
+  environment:
+    APP_ENV: prod
+    APP_DEBUG: '0'
+
+- name: Remove default nginx site configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  become: true
+
+- name: Install CyberMatos site configuration
+  template: src=cybermatos.tech.conf.j2 dest=/etc/nginx/sites-enabled/cybermatos.tech.conf mode=0644
+  become: true
+
+- name: Start nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+    enabled: yes
+  become: true
