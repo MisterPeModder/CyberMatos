@@ -29,7 +29,7 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $product->setCreatedAt(new \DateTimeImmutable);
+            $product->setCreatedAt(new \DateTimeImmutable());
             $productRepository->save($product, true);
 
             return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
