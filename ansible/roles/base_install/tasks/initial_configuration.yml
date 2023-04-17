@@ -5,3 +5,8 @@
 - name: Set timezone to Europe/Paris
   community.general.timezone:
     name: "Europe/Paris"
+
+- name: Create the 'cybermatos' user
+  ansible.builtin.user:
+    name: cybermatos
+    shell: /bin/bash

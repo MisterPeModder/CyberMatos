@@ -5,7 +5,5 @@
     # Perform all the basic setup (packages, services, etc.) as root by default
     - role: base_install
       become: true
-      become_method: su
     # Deploy the application as the regular user by default
     - role: deploy_application
-      become_method: su

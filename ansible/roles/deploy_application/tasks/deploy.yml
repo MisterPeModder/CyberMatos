@@ -1,11 +1,27 @@
+- name: Create database user
+  community.mysql.mysql_user:
+    name: '{{mysql_user}}'
+    password: '{{mysql_password}}'
+    state: present
+    priv:
+      'cybermatos.*': 'ALL,GRANT'
+  become: true
+
+- name: Create the cybermatos database
+  community.mysql.mysql_db:
+    name: cybermatos
+    state: present
+  become: true
+
 - name: Create /app directory
   ansible.builtin.file:
     path: /app
     state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: '{{ansible_user}}'
+    group: '{{ansible_user}}'
     mode: 0755
   become: true
+  become_user: root
 
 - name: Copy application to /app
   ansible.posix.synchronize:
@@ -20,23 +36,35 @@
     no_dev: true
     working_dir: /app
 
+- name: Copy .env.local
+  template: src=env.local.j2 dest=/app/.env.local
+
+- name: Optimize environment variables
+  ansible.builtin.shell: php bin/console dotenv:dump
+  args:
+    chdir: /app
+
 - name: Clear Symfony cache
   ansible.builtin.shell: php bin/console cache:clear
   args:
     chdir: /app
-  environment:
-    APP_ENV: prod
-    APP_DEBUG: '0'
+
+- name: Migrate database
+  ansible.builtin.shell: yes | php bin/console doctrine:migrations:migrate
+  args:
+    chdir: /app
 
 - name: Remove default nginx site configuration
   ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   become: true
+  become_user: root
 
 - name: Install CyberMatos site configuration
   template: src=cybermatos.tech.conf.j2 dest=/etc/nginx/sites-enabled/cybermatos.tech.conf mode=0644
   become: true
+  become_user: root
 
 - name: Start nginx service
   ansible.builtin.service:
@@ -44,3 +72,4 @@
     state: reloaded
     enabled: yes
   become: true
+  become_user: root

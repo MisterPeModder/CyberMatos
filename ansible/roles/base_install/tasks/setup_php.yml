@@ -17,6 +17,7 @@
       - mariadb-server
       - php8.2
       - php8.2-fpm
+      - php8.2-intl
       - php8.2-mysql
       - php8.2-xml
 

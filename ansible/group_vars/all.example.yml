@@ -6,3 +6,6 @@
 ---
 ansible_become_password: example_root_password
 mysql_root_password: example_mysql_root_password
+mysql_user: example_mysql_user
+mysql_password: example_mysql_password
+mysql_database: cybermatos
