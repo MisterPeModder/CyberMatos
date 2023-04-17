@@ -10,5 +10,6 @@
       - curl
       - gpg
       - lsb-release
+      - nginx
       - pip
       - software-properties-common
