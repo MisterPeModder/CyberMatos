@@ -5,7 +5,7 @@ CyberMatos is a toy e-commerce site built with Symfony and deployed with Ansible
 # Setup
 
 1. Import the cybermatos.sql file into a mariaDB database.
-2. Create a file `.en.local` with environment variable : `DATABASE_URL="mysql://user:password@127.0.0.1:3307/cybermatos?serverVersion=10.6.5-MariaDB"`
+2. Create a file `.env.local` with environment variable : `DATABASE_URL="mysql://user:password@127.0.0.1:3307/cybermatos?serverVersion=10.6.5-MariaDB"`
 3. Install dependencies with `composer install`
 4. Start the server with `symfony server:start`
 5. Go to homepage `https://localhost:+port` with the link specified in the logs.
@@ -16,7 +16,7 @@ List of API routes with JSON content type
 
 Retrieve a product or the list of products
 
-✔️ **/api/products**   
+✔️ **/api/products**  
 ✔️ **/api/products/{productId}**
 
 ```
