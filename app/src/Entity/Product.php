@@ -27,8 +27,10 @@ class Product
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToMany(targetEntity: Order::class, inversedBy: 'products')]
+    #[ORM\ManyToMany(targetEntity: Order::class, inversedBy: 'products', cascade: ['persist'])]
+    /*     #[@ORM\JoinTable(name="product_order")] */
     private Collection $orders;
+
 
     #[ORM\Column(nullable: true)]
     private ?float $price = null;

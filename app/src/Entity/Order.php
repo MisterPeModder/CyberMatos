@@ -20,10 +20,12 @@ class Order
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)] //remettre à false
     private ?User $applicant = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'orders')]
+
+
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'orders', cascade: ['persist'])]
     private Collection $products;
 
     public function __construct()
