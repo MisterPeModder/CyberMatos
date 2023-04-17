@@ -3,4 +3,6 @@
 - ansible.builtin.import_tasks:
     file: initial_configuration.yml
 - ansible.builtin.import_tasks:
+    file: setup_mariadb.yml
+- ansible.builtin.import_tasks:
     file: setup_php.yml
