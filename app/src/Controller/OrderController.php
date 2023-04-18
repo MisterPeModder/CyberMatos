@@ -4,19 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Form\OrderType;
-
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/order')]
 class OrderController extends AbstractController
 {
-    # liste de toutes les commandes
+    // liste de toutes les commandes
     #[Route('/', name: 'app_order_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository): Response
     {
@@ -25,18 +24,18 @@ class OrderController extends AbstractController
         ]);
     }
 
-    # delete une commande
+    // delete une commande
     #[Route('/{id}', name: 'app_order_delete', methods: ['POST'])]
     public function delete(Request $request, Order $order, OrderRepository $orderRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $order->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->request->get('_token'))) {
             $orderRepository->remove($order, true);
         }
 
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    # voir mon panier de session
+    // voir mon panier de session
     #[Route('/panier', name: 'app_order_show', methods: ['GET'])]
     public function show(SessionInterface $session, ProductRepository $productRepository)
     {
@@ -48,7 +47,7 @@ class OrderController extends AbstractController
         foreach ($panier as $id => $quantity) {
             $panierDatas[] = [
                 'product' => $productRepository->find($id),
-                'quantity' => $quantity
+                'quantity' => $quantity,
             ];
         }
 
@@ -59,10 +58,9 @@ class OrderController extends AbstractController
 
         return $this->render('order/show.html.twig', [
             'items' => $panierDatas,
-            'total' => $total
+            'total' => $total,
         ]);
     }
-
 
     #[Route('/{id}/edit', name: 'app_order_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Order $order, OrderRepository $orderRepository): Response
@@ -82,24 +80,23 @@ class OrderController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/{id}/add-to-cart', name: 'app_add_to_cart', methods: ['GET', 'POST'])]
     public function addPanier($id, SessionInterface $session)
     {
         $panier = $session->get('panier', []);
 
         if (!empty($panier[$id])) {
-            $panier[$id]++;
+            ++$panier[$id];
         } else {
-
             $panier[$id] = 1;
         }
 
         $session->set('panier', $panier);
-        return $this->redirectToRoute("app_order_show");
+
+        return $this->redirectToRoute('app_order_show');
         /*  dd($session->get('panier')); */
     }
+
     #[Route('/{id}/remove-to-cart', name: 'app_remove_to_cart', methods: ['GET', 'POST'])]
     public function removePanier($id, SessionInterface $session)
     {
@@ -110,12 +107,10 @@ class OrderController extends AbstractController
         }
 
         $session->set('panier', $panier);
-        return $this->redirectToRoute("app_order_show");
+
+        return $this->redirectToRoute('app_order_show');
     }
 }
-
-
-
 
 /*     #[Route('/new', name: 'app_order_new', methods: ['GET', 'POST'])]
 public function new(Request $request, OrderRepository $orderRepository): Response
