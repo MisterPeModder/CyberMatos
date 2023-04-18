@@ -28,7 +28,6 @@ class Product
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToMany(targetEntity: Order::class, inversedBy: 'products', cascade: ['persist'])]
-    /*     #[@ORM\JoinTable(name="product_order")] */
     private Collection $orders;
 
 

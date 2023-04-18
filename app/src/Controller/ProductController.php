@@ -7,15 +7,13 @@ use App\Entity\Order;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Repository\OrderRepository;
-/* use Symfony\Component\HttpFoundation\Session\SessionInterface; */
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
-
 
 #[Route('/products')]
 class ProductController extends AbstractController
@@ -24,7 +22,7 @@ class ProductController extends AbstractController
     public function list(ProductRepository $productRepository): Response
     {
         return $this->render('product/list.html.twig', [
-            'products' => $productRepository->findAll(),
+            'products' => $productRepository->findAll()
         ]);
     }
 
@@ -84,10 +82,9 @@ class ProductController extends AbstractController
         return $this->redirectToRoute('app_product_list', [], Response::HTTP_SEE_OTHER);
     }
 
-
-    /*    public function addToCart(Product $product, SessionInterface $session, EntityManagerInterface $manager): Response */
-    #[Route('/{id}/add-to-cart', name: 'app_add_to_cart', methods: ['POST'])]
-    public function addToCart(Product $product, Order $order, ProductRepository $productRepository, OrderRepository $orderRepository, EntityManagerInterface $manager, ManagerRegistry $doctrine, UserInterface $user): Response
+    # En cours de construction
+    #[Route('/{id}/add-to-cart2', name: 'app_add_to_cart2', methods: ['GET', 'POST'])]
+    public function addToCart(Product $product, Order $order, ProductRepository $productRepository, Request $request, OrderRepository $orderRepository, EntityManagerInterface $manager, ManagerRegistry $doctrine /* UserInterface $user */): Response
     {
         $productRepository = $doctrine->getRepository(Product::class);
 
@@ -96,27 +93,20 @@ class ProductController extends AbstractController
         $user = $order->getApplicant(1);
 
         // Chercher une commande existante avec l'ID spécifié
-        $order = $orderRepository->findOneBy(['id' => $id, 'applicant' => $user]);
+        $order = $orderRepository->findOneBy(['id' => $order, 'applicant' => $user]);
 
         if (!$order) {
-            // Si la commande n'existe pas, créer une nouvelle commande
             $order = new Order();
-            // set la date 
-            $order->setCreatedAt(new \DateTimeImmutable);
+            $order->setCreatedAt(new \DateTimeImmutable());
             // set un l'id du candidat -> user connecté
             $order->setApplicant($user);
         }
 
-        // set un id du produit
         $product = $productRepository->find($product);
-
-        // On ajoute le produit à la commande
         $order->addProduct($product);
-
-        // preparer à faire persister dans la bdd
         $manager->persist($order);
-        // importer dans la bdd
         $manager->flush();
+        $orderRepository->save($order, true);
 
 
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);

@@ -35,6 +35,7 @@
 
 	<a href="{{ path('app_product_edit', {'id': product.id}) }}">Modifier</a><br>
 	<a href="{{ path('app_product_json', {'id': product.id}) }}">{JSON}</a>
+
 	 <form method="POST" action="{{ path('app_add_to_cart', {'id': product.id}) }}">
                 <button type="submit" class="btn btn-primary">Ajouter au panier</button>
       </form>
