@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -22,9 +22,10 @@ class ApiController extends AbstractController
                 'name' => $product->getName(),
                 'description' => $product->getDescription(),
                 'photo' => $product->getImage(),
-                'price' => $product->getPrice()
+                'price' => $product->getPrice(),
             ];
         }
+
         return $this->json($jsonData);
     }
 
@@ -36,8 +37,9 @@ class ApiController extends AbstractController
             'name' => $product->getName(),
             'description' => $product->getDescription(),
             'photo' => $product->getImage(),
-            'price' => $product->getPrice()
+            'price' => $product->getPrice(),
         ];
+
         return $this->json($jsonData);
     }
 }
