@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
 use App\Entity\Order;
+use App\Entity\Product;
 use App\Form\ProductType;
-use App\Repository\ProductRepository;
 use App\Repository\OrderRepository;
-
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
 
 #[Route('/products')]
 class ProductController extends AbstractController
@@ -22,7 +21,7 @@ class ProductController extends AbstractController
     public function list(ProductRepository $productRepository): Response
     {
         return $this->render('product/list.html.twig', [
-            'products' => $productRepository->findAll()
+            'products' => $productRepository->findAll(),
         ]);
     }
 
@@ -50,7 +49,7 @@ class ProductController extends AbstractController
     public function show(Product $product): Response
     {
         return $this->render('product/show.html.twig', [
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
@@ -82,7 +81,7 @@ class ProductController extends AbstractController
         return $this->redirectToRoute('app_product_list', [], Response::HTTP_SEE_OTHER);
     }
 
-    # En cours de construction
+    // En cours de construction
     #[Route('/{id}/add-to-cart2', name: 'app_add_to_cart2', methods: ['GET', 'POST'])]
     public function addToCart(Product $product, Order $order, ProductRepository $productRepository, Request $request, OrderRepository $orderRepository, EntityManagerInterface $manager, ManagerRegistry $doctrine /* UserInterface $user */): Response
     {
@@ -107,7 +106,6 @@ class ProductController extends AbstractController
         $manager->persist($order);
         $manager->flush();
         $orderRepository->save($order, true);
-
 
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
     }

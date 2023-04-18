@@ -30,7 +30,6 @@ class Product
     #[ORM\ManyToMany(targetEntity: Order::class, inversedBy: 'products', cascade: ['persist'])]
     private Collection $orders;
 
-
     #[ORM\Column(nullable: true)]
     private ?float $price = null;
 

@@ -39,7 +39,6 @@ class OrderRepository extends ServiceEntityRepository
         }
     }
 
-
 //    /**
 //     * @return Order[] Returns an array of Order objects
 //     */
