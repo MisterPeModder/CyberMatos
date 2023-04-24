@@ -163,4 +163,94 @@ class ApiUserControllerTest extends WebTestCase
         $data = json_decode($this->client->getResponse()->getContent());
         self::assertTrue(isset($data->error));
     }
+
+    public function testLoginNormal(): void
+    {
+        $this->testRegisterNew();
+
+        $url = '/api/login';
+
+        $this->client->jsonRequest('POST', $url, [
+            'login' => 'newuser',
+            'password' => '1234',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertTrue(isset($data->token));
+        self::assertNotEmpty($data->token);
+    }
+
+    public function testLoginBadPassword(): void
+    {
+        $this->testRegisterNew();
+
+        $url = '/api/login';
+
+        $this->client->jsonRequest('POST', $url, [
+            'login' => 'newuser',
+            'password' => 'correcthorsestaple',
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertEquals('Invalid credentials', $data->error);
+        self::assertTrue(isset($data->error));
+    }
+
+    public function testLoginBadLogin(): void
+    {
+        $this->testRegisterNew();
+
+        $url = '/api/login';
+
+        $this->client->jsonRequest('POST', $url, [
+            'login' => 'baduser',
+            'password' => '1234',
+        ]);
+
+        self::assertResponseStatusCodeSame(403);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertEquals('Invalid credentials', $data->error);
+        self::assertTrue(isset($data->error));
+    }
+
+    public function testLoginEmptyJson(): void
+    {
+        $url = '/api/login';
+
+        $this->client->jsonRequest('POST', $url);
+
+        self::assertResponseStatusCodeSame(400);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertTrue(isset($data->error));
+    }
+
+    public function testLoginEmptyLogin(): void
+    {
+        $url = '/api/login';
+
+        $this->client->jsonRequest('POST', $url, [
+            'login' => '',
+            'password' => '12345',
+        ]);
+
+        self::assertResponseStatusCodeSame(400);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertTrue(isset($data->error));
+    }
+
+    public function testLoginEmptyPassword(): void
+    {
+        $url = '/api/login';
+
+        $this->client->jsonRequest('POST', $url, [
+            'login' => 'user',
+            'password' => '',
+        ]);
+
+        self::assertResponseStatusCodeSame(400);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertTrue(isset($data->error));
+    }
 }

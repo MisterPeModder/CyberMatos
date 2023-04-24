@@ -23,6 +23,9 @@ class AccessToken
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $expiresAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -65,6 +68,35 @@ class AccessToken
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function generate(User $user): AccessToken
+    {
+        $accessToken = new AccessToken();
+
+        $now = new \DateTimeImmutable('now');
+
+        $accessToken->setUserId($user);
+        $accessToken->setValue(rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '='));
+        $accessToken->setCreatedAt($now);
+        $accessToken->setExpiresAt($now->modify('+1 day'));
+
+        return $accessToken;
+    }
+
+    public function getExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->expiresAt;
+    }
+
+    public function setExpiresAt(\DateTimeImmutable $expiresAt): self
+    {
+        $this->expiresAt = $expiresAt;
 
         return $this;
     }
