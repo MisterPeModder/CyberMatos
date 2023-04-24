@@ -23,6 +23,6 @@ class AccessTokenHandler implements AccessTokenHandlerInterface
         }
 
         // and return a UserBadge object containing the user identifier from the found token
-        return new UserBadge($accessToken->getUserId());
+        return new UserBadge($accessToken->getUserId()->getUserIdentifier());
     }
 }

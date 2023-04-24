@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -81,6 +82,18 @@ class ApiUserController extends AbstractController
 
         return new JsonResponse([
             'token' => $accessToken->getValue(),
+        ], 200);
+    }
+
+    #[Route('/users', name: 'get_current_user', methods: ['GET'])]
+    public function users(#[CurrentUser] ?User $user): JsonResponse
+    {
+        // TODO: change default HTML response of unauthenticated users to JSON
+        return new JsonResponse([
+            'login' => $user->getLogin(),
+            'email' => $user->getEmail(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
         ], 200);
     }
 }
