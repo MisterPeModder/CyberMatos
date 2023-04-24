@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -14,17 +15,25 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['order_list', 'order_id'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['order_list', 'order_id'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: true)] // remettre à false
     private ?User $applicant = null;
 
+
+    #[Groups(['order_list', 'order_id'])]
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'orders', cascade: ['persist'])]
     private Collection $products;
+
+    #[Groups(['order_list', 'order_id'])]
+    #[ORM\Column(nullable: true)]
+    private ?float $totalPrice = null;
 
     public function __construct()
     {
@@ -83,6 +92,18 @@ class Order
         if ($this->products->removeElement($product)) {
             $product->removeOrder($this);
         }
+
+        return $this;
+    }
+
+    public function getTotalPrice(): ?float
+    {
+        return $this->totalPrice;
+    }
+
+    public function setTotalPrice(?float $totalPrice): self
+    {
+        $this->totalPrice = $totalPrice;
 
         return $this;
     }

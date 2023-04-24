@@ -37,102 +37,102 @@ class ProductControllerTest extends WebTestCase
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
     }
 
-//    public function testNew(): void
-//    {
-//        $originalNumObjectsInRepository = count($this->repository->findAll());
-//
-//        $this->markTestIncomplete();
-//        $this->client->request('GET', sprintf('%snew', $this->path));
-//
-//        self::assertResponseStatusCodeSame(200);
-//
-//        $this->client->submitForm('Save', [
-//            'product[name]' => 'Testing',
-//            'product[description]' => 'Testing',
-//            'product[image]' => 'Testing',
-//            'product[createdAt]' => 'Testing',
-//            'product[orders]' => 'Testing',
-//        ]);
-//
-//        self::assertResponseRedirects('/product/');
-//
-//        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
-//    }
-//
-//    public function testShow(): void
-//    {
-//        $this->markTestIncomplete();
-//        $fixture = new Product();
-//        $fixture->setName('My Title');
-//        $fixture->setDescription('My Title');
-//        $fixture->setImage('My Title');
-//        $fixture->setCreatedAt('My Title');
-//        $fixture->setOrders('My Title');
-//
-//        $this->repository->save($fixture, true);
-//
-//        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-//
-//        self::assertResponseStatusCodeSame(200);
-//        self::assertPageTitleContains('Product');
-//
-//        // Use assertions to check that the properties are properly displayed.
-//    }
-//
-//    public function testEdit(): void
-//    {
-//        $this->markTestIncomplete();
-//        $fixture = new Product();
-//        $fixture->setName('My Title');
-//        $fixture->setDescription('My Title');
-//        $fixture->setImage('My Title');
-//        $fixture->setCreatedAt('My Title');
-//        $fixture->setOrders('My Title');
-//
-//        $this->repository->save($fixture, true);
-//
-//        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
-//
-//        $this->client->submitForm('Update', [
-//            'product[name]' => 'Something New',
-//            'product[description]' => 'Something New',
-//            'product[image]' => 'Something New',
-//            'product[createdAt]' => 'Something New',
-//            'product[orders]' => 'Something New',
-//        ]);
-//
-//        self::assertResponseRedirects('/product/');
-//
-//        $fixture = $this->repository->findAll();
-//
-//        self::assertSame('Something New', $fixture[0]->getName());
-//        self::assertSame('Something New', $fixture[0]->getDescription());
-//        self::assertSame('Something New', $fixture[0]->getImage());
-//        self::assertSame('Something New', $fixture[0]->getCreatedAt());
-//        self::assertSame('Something New', $fixture[0]->getOrders());
-//    }
-//
-//    public function testRemove(): void
-//    {
-//        $this->markTestIncomplete();
-//
-//        $originalNumObjectsInRepository = count($this->repository->findAll());
-//
-//        $fixture = new Product();
-//        $fixture->setName('My Title');
-//        $fixture->setDescription('My Title');
-//        $fixture->setImage('My Title');
-//        $fixture->setCreatedAt('My Title');
-//        $fixture->setOrders('My Title');
-//
-//        $this->repository->save($fixture, true);
-//
-//        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
-//
-//        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-//        $this->client->submitForm('Delete');
-//
-//        self::assertSame($originalNumObjectsInRepository, count($this->repository->findAll()));
-//        self::assertResponseRedirects('/product/');
-//    }
+    //    public function testNew(): void
+    //    {
+    //        $originalNumObjectsInRepository = count($this->repository->findAll());
+    //
+    //        $this->markTestIncomplete();
+    //        $this->client->request('GET', sprintf('%snew', $this->path));
+    //
+    //        self::assertResponseStatusCodeSame(200);
+    //
+    //        $this->client->submitForm('Save', [
+    //            'product[name]' => 'Testing',
+    //            'product[description]' => 'Testing',
+    //            'product[image]' => 'Testing',
+    //            'product[createdAt]' => 'Testing',
+    //            'product[orders]' => 'Testing',
+    //        ]);
+    //
+    //        self::assertResponseRedirects('/product/');
+    //
+    //        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
+    //    }
+    //
+    //    public function testShow(): void
+    //    {
+    //        $this->markTestIncomplete();
+    //        $fixture = new Product();
+    //        $fixture->setName('My Title');
+    //        $fixture->setDescription('My Title');
+    //        $fixture->setImage('My Title');
+    //        $fixture->setCreatedAt('My Title');
+    //        $fixture->setOrders('My Title');
+    //
+    //        $this->repository->save($fixture, true);
+    //
+    //        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
+    //
+    //        self::assertResponseStatusCodeSame(200);
+    //        self::assertPageTitleContains('Product');
+    //
+    //        // Use assertions to check that the properties are properly displayed.
+    //    }
+    //
+    //    public function testEdit(): void
+    //    {
+    //        $this->markTestIncomplete();
+    //        $fixture = new Product();
+    //        $fixture->setName('My Title');
+    //        $fixture->setDescription('My Title');
+    //        $fixture->setImage('My Title');
+    //        $fixture->setCreatedAt('My Title');
+    //        $fixture->setOrders('My Title');
+    //
+    //        $this->repository->save($fixture, true);
+    //
+    //        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
+    //
+    //        $this->client->submitForm('Update', [
+    //            'product[name]' => 'Something New',
+    //            'product[description]' => 'Something New',
+    //            'product[image]' => 'Something New',
+    //            'product[createdAt]' => 'Something New',
+    //            'product[orders]' => 'Something New',
+    //        ]);
+    //
+    //        self::assertResponseRedirects('/product/');
+    //
+    //        $fixture = $this->repository->findAll();
+    //
+    //        self::assertSame('Something New', $fixture[0]->getName());
+    //        self::assertSame('Something New', $fixture[0]->getDescription());
+    //        self::assertSame('Something New', $fixture[0]->getImage());
+    //        self::assertSame('Something New', $fixture[0]->getCreatedAt());
+    //        self::assertSame('Something New', $fixture[0]->getOrders());
+    //    }
+    //
+    //    public function testRemove(): void
+    //    {
+    //        $this->markTestIncomplete();
+    //
+    //        $originalNumObjectsInRepository = count($this->repository->findAll());
+    //
+    //        $fixture = new Product();
+    //        $fixture->setName('My Title');
+    //        $fixture->setDescription('My Title');
+    //        $fixture->setImage('My Title');
+    //        $fixture->setCreatedAt('My Title');
+    //        $fixture->setOrders('My Title');
+    //
+    //        $this->repository->save($fixture, true);
+    //
+    //        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
+    //
+    //        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
+    //        $this->client->submitForm('Delete');
+    //
+    //        self::assertSame($originalNumObjectsInRepository, count($this->repository->findAll()));
+    //        self::assertResponseRedirects('/product/');
+    //    }
 }

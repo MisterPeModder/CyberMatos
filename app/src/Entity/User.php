@@ -55,6 +55,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Ignore]
     private Collection $accessTokens;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Cart $cart = null;
+
     public function __construct()
     {
         $this->accessTokens = new ArrayCollection();
@@ -188,6 +191,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLogin(string $login): self
     {
         $this->login = $login;
+        return $this;
+    }
+
+    public function getCart(): ?Cart
+    {
+        return $this->cart;
+    }
+
+    public function setCart(Cart $cart): self
+    {
+        // set the owning side of the relation if necessary
+        if ($cart->getUser() !== $this) {
+            $cart->setUser($this);
+        }
+
+        $this->cart = $cart;
 
         return $this;
     }
