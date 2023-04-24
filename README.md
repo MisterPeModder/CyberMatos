@@ -52,6 +52,16 @@ ansible-playbook -i hosts playbook.yml
 6. Take a coffee break ☕, this may take a while.
 7. Enjoy!
 
+## Running Tests
+
+```sh
+cd app
+symfony console doctrine:database:drop --force --env=test
+symfony console doctrine:database:create --env=test
+symfony console doctrine:migrations:migrate -n --env=test
+./bin/phpunit
+```
+
 ## Application Structure
 
 ### Api routes
