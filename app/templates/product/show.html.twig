@@ -22,7 +22,7 @@
 			</tr>
 			<tr>
 				<th>Image</th>
-				<td><img src="{{ asset(product.image) }}" width="150px" alt=""></td>
+				<td><img src="{{ asset(product.photo) }}" width="150px" alt=""></td>
 			</tr>
 			<tr>
 				<th>Créé</th>
@@ -36,8 +36,8 @@
 	<a href="{{ path('app_product_edit', {'id': product.id}) }}">Modifier</a><br>
 	<a href="{{ path('app_product_json', {'id': product.id}) }}">{JSON}</a>
 
-	 <form method="POST" action="{{ path('app_add_to_cart', {'id': product.id}) }}">
-                <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-      </form>
+	<form method="POST" action="{{ path('app_add_to_cart', {'id': product.id}) }}">
+		<button type="submit" class="btn btn-primary">Ajouter au panier</button>
+	</form>
 
 {% endblock %}
