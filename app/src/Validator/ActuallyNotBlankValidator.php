@@ -16,6 +16,10 @@ class ActuallyNotBlankValidator extends ConstraintValidator
 
         /* @var ActuallyNotBlank $constraint */
 
+        if ($constraint->ignoreNull && null == $value) {
+            return;
+        }
+
         if (null == $value || !is_string($value) || '' === trim($value)) {
             // the argument must be a string or an object implementing __toString()
             $this->context->buildViolation($constraint->message)

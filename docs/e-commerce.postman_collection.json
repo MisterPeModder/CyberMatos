@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "e06418d4-eb06-4bfc-acbe-c76b35c36e59",
+		"_postman_id": "25977e6b-28aa-4cb7-aa0d-af18a86b4948",
 		"name": "e-commerce",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "19317786"
+		"_exporter_id": "27075601"
 	},
 	"item": [
 		{
-			"name": "/api/products",
+			"name": "Get All Products",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -52,49 +52,7 @@
 			]
 		},
 		{
-			"name": "/api/products",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"TTTTTTTTTTTTTTTTTT\",\r\n    \"description\": \"descritpion\",\r\n    \"photo\": \"dsf.png\",\r\n    \"price\": 33\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{API_URL}}/api/products",
-					"host": [
-						"{{API_URL}}"
-					],
-					"path": [
-						"api",
-						"products"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "New Request",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": ""
-						}
-					},
-					"_postman_previewlanguage": "Text",
-					"header": [],
-					"cookie": [],
-					"body": ""
-				}
-			]
-		},
-		{
-			"name": "/api/products/{productId}",
+			"name": "Get Product By ID",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -111,14 +69,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{API_URL}}/api/products/1",
+					"raw": "{{API_URL}}/api/products/5",
 					"host": [
 						"{{API_URL}}"
 					],
 					"path": [
 						"api",
 						"products",
-						"1"
+						"5"
 					]
 				}
 			},
@@ -140,9 +98,51 @@
 			]
 		},
 		{
-			"name": "/api/products/{productId}",
+			"name": "Create a New Product",
 			"request": {
-				"method": "PUT",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"New Product\",\r\n    \"description\": \"descritpion\",\r\n    \"photo\": \"dsf.png\",\r\n    \"price\": 33\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/products",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Update Existing Product",
+			"request": {
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -183,13 +183,13 @@
 			]
 		},
 		{
-			"name": "/api/products/{productId}",
+			"name": "Delete Product By ID",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{}",
+					"raw": "{\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -197,14 +197,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{API_URL}}/api/products/3",
+					"raw": "{{API_URL}}/api/products/24",
 					"host": [
 						"{{API_URL}}"
 					],
 					"path": [
 						"api",
 						"products",
-						"3"
+						"24"
 					]
 				}
 			},
@@ -264,22 +264,44 @@
 			]
 		},
 		{
-			"name": "/api/carts/",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
+			"name": "Delete Cart By ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api/carts/10",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"carts",
+						"10"
+					]
+				}
 			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "/api/carts/",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "{{API_URL}}/api/carts",
 					"host": [
@@ -309,51 +331,16 @@
 			]
 		},
 		{
-			"name": "/api/carts/{productId}",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{}"
-				},
-				"url": {
-					"raw": "{{API_URL}}/api/carts/3",
-					"host": [
-						"{{API_URL}}"
-					],
-					"path": [
-						"api",
-						"carts",
-						"3"
-					]
-				}
+			"name": "/api/carts/validate",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
 			},
-			"response": [
-				{
-					"name": "New Request",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": ""
-						}
-					},
-					"_postman_previewlanguage": "Text",
-					"header": [],
-					"cookie": [],
-					"body": ""
-				}
-			]
-		},
-		{
-			"name": "/api/cart/validate",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{}",
+					"raw": "{\r\n\" id \": 1 ,\r\n\" totalPrice \": 42.01 ,\r\n\" products \": [\r\n{\r\n\"id\": 1 \r\n} ,\r\n{\r\n\"id\": 2\r\n}\r\n]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -361,13 +348,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{API_URL}}/api/cart/validate",
+					"raw": "{{API_URL}}/api/carts/validate",
 					"host": [
 						"{{API_URL}}"
 					],
 					"path": [
 						"api",
-						"cart",
+						"carts",
 						"validate"
 					]
 				}
@@ -481,7 +468,7 @@
 			]
 		},
 		{
-			"name": "/api/register",
+			"name": "Register User",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -519,7 +506,7 @@
 			"response": []
 		},
 		{
-			"name": "/api/login",
+			"name": "Login",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -550,6 +537,51 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Current User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/api/users",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Current User",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"boba\",\n    \"lastname\": \"Fett\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/users",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -557,7 +589,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "0_PO_xh6_103Nt_mX865C5xgjiODKfj_vBtFv-_gffk",
+				"value": "{{token}}",
 				"type": "string"
 			}
 		]
@@ -584,34 +616,8 @@
 	],
 	"variable": [
 		{
-			"key": "API_URL",
-			"value": "http://127.0.0.1:44571",
-			"type": "default"
-		},
-		{
-			"key": "userLogin",
-			"value": "Mike",
-			"type": "default"
-		},
-		{
-			"key": "userPassword",
-			"value": "1234",
-			"type": "default"
-		},
-		{
-			"key": "userEmail",
-			"value": "mike@tech.fr",
-			"type": "default"
-		},
-		{
-			"key": "userFirstName",
-			"value": "Mike",
-			"type": "default"
-		},
-		{
-			"key": "userLastName",
-			"value": "Tech",
-			"type": "default"
+			"key": "token",
+			"value": "4hc9d0AaaWzWlTCsUhL5N75iqUOKOFO4yR6dDUWEgKg"
 		}
 	]
 }

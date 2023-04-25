@@ -305,4 +305,109 @@ class ApiUserControllerTest extends WebTestCase
         $this->client->jsonRequest('GET', $url);
         self::assertResponseStatusCodeSame(401);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testUpdateCurrentUserAuthenticated(): void
+    {
+        $url = '/api/users';
+
+        $this->testLoginNormal();
+
+        /** @var AccessTokenRepository $tokenRepository */
+        $tokenRepository = static::getContainer()->get('doctrine')->getRepository(AccessToken::class);
+        $token = $tokenRepository->findAll()[0];
+
+        $this->client->jsonRequest('PATCH', $url, [
+            'email' => 'newmail@mail.com',
+            'firstname' => 'newname',
+            'lastname' => 'newlastname',
+            'password' => 'changedpassword',
+        ], server: [
+            'HTTP_AUTHORIZATION' => 'Bearer '.$token->getValue(),
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+
+        // Fetch updated information and check if it actually changed
+        $this->client->jsonRequest('GET', '/api/users', server: [
+            'HTTP_AUTHORIZATION' => 'Bearer '.$token->getValue(),
+        ]);
+        $data = json_decode($this->client->getResponse()->getContent());
+
+        self::assertEquals('newuser', $data->login);
+        self::assertEquals('newmail@mail.com', $data->email);
+        self::assertEquals('newname', $data->firstname);
+        self::assertEquals('newlastname', $data->lastname);
+        self::assertFalse(isset($data->password));
+
+        // Trying to log in using new password
+        $this->client->jsonRequest('POST', '/api/login', [
+            'login' => 'newuser',
+            'password' => 'changedpassword',
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertTrue(isset($data->token));
+        self::assertNotEmpty($data->token);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testUpdateCurrentUserInvalidData(): void
+    {
+        $url = '/api/users';
+
+        $this->testLoginNormal();
+
+        /** @var AccessTokenRepository $tokenRepository */
+        $tokenRepository = static::getContainer()->get('doctrine')->getRepository(AccessToken::class);
+        $token = $tokenRepository->findAll()[0];
+
+        $this->client->jsonRequest('PATCH', $url, [
+            'firstname' => '   ',
+        ], server: [
+            'HTTP_AUTHORIZATION' => 'Bearer '.$token->getValue(),
+        ]);
+
+        self::assertResponseStatusCodeSame(400);
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertTrue(isset($data->error));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testUpdateCurrentUserExistingLogin(): void
+    {
+        $url = '/api/users';
+
+        $this->testLoginNormal();
+
+        /** @var AccessTokenRepository $tokenRepository */
+        $tokenRepository = static::getContainer()->get('doctrine')->getRepository(AccessToken::class);
+        $token = $tokenRepository->findAll()[0];
+
+        // Create another user
+        $this->client->jsonRequest('POST', '/api/register', [
+            'login' => 'pre-existing',
+            'password' => '1234',
+            'email' => 'random@example.com',
+            'firstname' => 'A',
+            'lastname' => 'B',
+        ]);
+
+        $this->client->jsonRequest('PATCH', $url, [
+            'login' => 'pre-existing',
+        ], server: [
+            'HTTP_AUTHORIZATION' => 'Bearer '.$token->getValue(),
+        ]);
+
+        self::assertResponseStatusCodeSame(409); // HTTP conflict
+        $data = json_decode($this->client->getResponse()->getContent());
+        self::assertEquals('Login already used', $data->error);
+    }
 }
