@@ -3,23 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
+use App\Entity\User;
 use App\Entity\Order;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
 use App\Entity\CartProduct;
-use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\CartRepository;
-use App\Repository\CartProductRepository;
-use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CartProductRepository;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints\CardSchemeValidator;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 
 
@@ -27,20 +20,30 @@ class ApiCartController extends AbstractController
 {
     # Ajouter un produit au panier. /api/carts/{productId} – AUTHED
     #[Route('/api/carts/{productId}', name: 'app_add_product_cart_json', methods: ['POST'])]
-    public function addProductCart($productId, EntityManagerInterface $em, CartRepository $cartRepository): JsonResponse
+    public function addProductCart($productId, EntityManagerInterface $em, CartRepository $cartRepository, $userId = 1): JsonResponse
     {
+
         $product = $em->getRepository(Product::class)->find($productId);
         if (!$product) {
             return new JsonResponse(['erreur' => "Product $productId not found"], 404);
         }
-        $cartId = $cartRepository->find(2);
-        $cartProduct = $em->getRepository(CartProduct::class)->findOneBy(['cart' => $cartId, 'product' => $product]);
+
+        $cart = $cartRepository->findOneBy([]);
+        if (!$cart) {
+            $cart = new Cart();
+            $cart->setTotalPrice(0);
+            $cart->setUser($em->getReference(User::class, $userId));
+            $em->persist($cart);
+            $em->flush();
+        }
+
+        $cartProduct = $em->getRepository(CartProduct::class)->findOneBy(['cart' => $cart, 'product' => $product]);
         if ($cartProduct) {
             $cartProduct->setQuantity($cartProduct->getQuantity() + 1);
             $cartProduct->setTotalPrice($cartProduct->getTotalPrice() + $product->getPrice());
         } else {
             $cartProduct = new CartProduct();
-            $cartProduct->setCart($cartId);
+            $cartProduct->setCart($cart);
             $cartProduct->setProduct($product);
             $cartProduct->setQuantity(1);
             $cartProduct->setTotalPrice($product->getPrice());
@@ -66,17 +69,17 @@ class ApiCartController extends AbstractController
     #[Route('/api/carts', name: 'app_state_cart_json', methods: ['GET'])]
     public function CartId(CartRepository $cartRepository): JsonResponse
     {
-        $id = 2;
-        $cart = $cartRepository->find($id);
-        if (!$cart) {
-            return new JsonResponse(['error' => "This Cart $id was not found"], 404);
-        }
-
         $total = 0;
+        # Récupérer le panier de l'utilisateur
+        /* $cart = $cartRepository->findOneBy(['user' => $this->getUser()]); */
+        $cart = $cartRepository->findOneBy([], ['id' => 'desc']);
+
+        if (!$cart) {
+            return new JsonResponse(['error' => "Cart was not found"], 404);
+        }
 
         $data = [
             'id' => $cart->getId(),
-            # -> ce totalPrice doit être le total de tous les produits
             'totalPrice' => $total,
             'products' => []
         ];
@@ -84,6 +87,7 @@ class ApiCartController extends AbstractController
         foreach ($cart->getCartProducts() as $cartProduct) {
             $product = $cartProduct->getProduct();
             $total += $product->getPrice() * $cartProduct->getQuantity();
+
             $data['products'][] = [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
@@ -100,8 +104,59 @@ class ApiCartController extends AbstractController
     }
 
     # Validation du panier (convertir le panier en commande) /api/carts/validate – AUTHED
-    # ?
+    #[Route('/api/cart/validate', name: 'app_validate_cart_json', methods: ['POST'])]
+    public function validateCart(EntityManagerInterface $em, CartRepository $cartRepository): JsonResponse
+    {
+        $total = 0;
+        $user = 1;
+        $cart = $cartRepository->findOneBy(['user' => $user]);
+        # Récupérer le panier de l'utilisateur
+        /*  $cart = $cartRepository->findOneBy(['user' => $this->getUser()]); */
+        $cart = $cartRepository->findOneBy(['user' => $user]);
 
+        if (!$cart) {
+            return new JsonResponse(['error' => "Cart was not found"], 404);
+        }
 
+        $order = new Order();
+        /*  $order->setApplicant(1); */
+        $order->setCreatedAt(new \DateTimeImmutable());
+        $em->persist($order);
+        $em->flush();
 
+        foreach ($cart->getCartProducts() as $cartProduct) {
+            $product = $cartProduct->getProduct();
+            $product->addOrder($order);
+            $order->addProduct($product);
+        }
+
+        $data = [
+            'id' => $order->getId(),
+            'totalPrice' => $total,
+            'createdAt' => $order->getCreatedAt()->format('Y-m-d H:i:s'),
+            'products' => [],
+        ];
+
+        foreach ($cart->getCartProducts() as $cartProduct) {
+            $product = $cartProduct->getProduct();
+            $total += $product->getPrice() * $cartProduct->getQuantity();
+            $data['products'][] = [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'quantity' => $cartProduct->getQuantity(),
+                'price' => $product->getPrice(),
+                'totalPrice' => $product->getPrice() * $cartProduct->getQuantity(),
+            ];
+        }
+
+        $data['totalPrice'] = $total;
+
+        $order->setTotalPrice($total);
+        $em->persist($order);
+        $em->flush();
+
+        $jsonData = json_encode($data);
+
+        return new JsonResponse($jsonData, 200, [], true);
+    }
 }
