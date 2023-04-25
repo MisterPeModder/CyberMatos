@@ -3,26 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
-use App\Entity\User;
+use App\Entity\CartProduct;
 use App\Entity\Order;
 use App\Entity\Product;
-use App\Entity\CartProduct;
+use App\Entity\User;
+use App\Repository\CartProductRepository;
 use App\Repository\CartRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\CartProductRepository;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ApiCartController extends AbstractController
 {
-    # Ajouter un produit au panier. /api/carts/{productId} – AUTHED
+    // Ajouter un produit au panier. /api/carts/{productId} – AUTHED
     #[Route('/api/carts/{productId}', name: 'app_add_product_cart_json', methods: ['POST'])]
     public function addProductCart($productId, EntityManagerInterface $em, CartRepository $cartRepository, $userId = 1): JsonResponse
     {
-
         $product = $em->getRepository(Product::class)->find($productId);
         if (!$product) {
             return new JsonResponse(['erreur' => "Product $productId not found"], 404);
@@ -50,10 +47,11 @@ class ApiCartController extends AbstractController
             $em->persist($cartProduct);
         }
         $em->flush();
+
         return new JsonResponse(['message' => "The product $productId has been added to your cart."], 201, []);
     }
 
-    # Retirer produit du panier. /api/carts/{productId} – AUTHED
+    // Retirer produit du panier. /api/carts/{productId} – AUTHED
     #[Route('/api/carts/{productId}', name: 'app_delete_product_cart_json', methods: ['DELETE'])]
     public function deleteProductCartId($productId, EntityManagerInterface $em, CartProductRepository $cartProductRepository): JsonResponse
     {
@@ -62,26 +60,27 @@ class ApiCartController extends AbstractController
             $em->remove($cartProduct);
         }
         $em->flush();
+
         return new JsonResponse(['message' => 'Product removed from cart.']);
     }
 
-    # Voir l'état du panier /api/carts/{productId} – AUTHED
+    // Voir l'état du panier /api/carts/{productId} – AUTHED
     #[Route('/api/carts', name: 'app_state_cart_json', methods: ['GET'])]
     public function CartId(CartRepository $cartRepository): JsonResponse
     {
         $total = 0;
-        # Récupérer le panier de l'utilisateur
+        // Récupérer le panier de l'utilisateur
         /* $cart = $cartRepository->findOneBy(['user' => $this->getUser()]); */
         $cart = $cartRepository->findOneBy([], ['id' => 'desc']);
 
         if (!$cart) {
-            return new JsonResponse(['error' => "Cart was not found"], 404);
+            return new JsonResponse(['error' => 'Cart was not found'], 404);
         }
 
         $data = [
             'id' => $cart->getId(),
             'totalPrice' => $total,
-            'products' => []
+            'products' => [],
         ];
 
         foreach ($cart->getCartProducts() as $cartProduct) {
@@ -100,22 +99,23 @@ class ApiCartController extends AbstractController
         $data['totalPrice'] = $total;
 
         $json = json_encode($data);
+
         return new JsonResponse($json, 200, [], true);
     }
 
-    # Validation du panier (convertir le panier en commande) /api/carts/validate – AUTHED
+    // Validation du panier (convertir le panier en commande) /api/carts/validate – AUTHED
     #[Route('/api/cart/validate', name: 'app_validate_cart_json', methods: ['POST'])]
     public function validateCart(EntityManagerInterface $em, CartRepository $cartRepository): JsonResponse
     {
         $total = 0;
         $user = 1;
         $cart = $cartRepository->findOneBy(['user' => $user]);
-        # Récupérer le panier de l'utilisateur
+        // Récupérer le panier de l'utilisateur
         /*  $cart = $cartRepository->findOneBy(['user' => $this->getUser()]); */
         $cart = $cartRepository->findOneBy(['user' => $user]);
 
         if (!$cart) {
-            return new JsonResponse(['error' => "Cart was not found"], 404);
+            return new JsonResponse(['error' => 'Cart was not found'], 404);
         }
 
         $order = new Order();

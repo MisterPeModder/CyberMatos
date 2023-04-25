@@ -62,7 +62,6 @@ class CartProductRepository extends ServiceEntityRepository
             ->getResult();
     } */
 
-
     //    /**
     //     * @return CartProduct[] Returns an array of CartProduct objects
     //     */

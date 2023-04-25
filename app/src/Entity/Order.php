@@ -26,10 +26,8 @@ class Order
     #[ORM\JoinColumn(nullable: true)] // remettre à false
     private ?User $applicant = null;
 
-
     #[Groups(['order_list', 'order_id'])]
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'orders', cascade: ['persist'])]
-
     private Collection $products;
 
     #[Groups(['order_list', 'order_id'])]
