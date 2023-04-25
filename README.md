@@ -1,4 +1,6 @@
-# CyberMatos
+CyberMatos
+[![codecov](https://codecov.io/gh/MisterPeModder/CyberMatos/branch/master/graph/badge.svg?token=N34LB696AS)](https://codecov.io/gh/MisterPeModder/CyberMatos)
+===
 
 CyberMatos is a toy e-commerce site built with Symfony and deployed with Ansible.
 
