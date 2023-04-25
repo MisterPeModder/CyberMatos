@@ -88,7 +88,6 @@ class ApiUserController extends AbstractController
     #[Route('/users', name: 'get_current_user', methods: ['GET'])]
     public function users(#[CurrentUser] ?User $user): JsonResponse
     {
-        // TODO: change default HTML response of unauthenticated users to JSON
         return new JsonResponse([
             'login' => $user->getLogin(),
             'email' => $user->getEmail(),
