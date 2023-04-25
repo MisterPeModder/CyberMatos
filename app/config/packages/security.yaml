@@ -17,6 +17,7 @@ security:
         main:
             access_token:
                 token_handler: App\Security\AccessTokenHandler
+            entry_point: App\Security\AuthenticationEntryPoint
             logout:
                 path: app_logout
                 # where to redirect after logout
