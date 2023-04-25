@@ -2,7 +2,9 @@
 
 namespace App\Test\Controller;
 
+use App\Entity\AccessToken;
 use App\Entity\User;
+use App\Repository\AccessTokenRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -252,5 +254,55 @@ class ApiUserControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(400);
         $data = json_decode($this->client->getResponse()->getContent());
         self::assertTrue(isset($data->error));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testCurrentUserAuthenticated(): void
+    {
+        $url = '/api/users';
+
+        $this->testLoginNormal();
+
+        /** @var AccessTokenRepository $tokenRepository */
+        $tokenRepository = static::getContainer()->get('doctrine')->getRepository(AccessToken::class);
+        $token = $tokenRepository->findAll()[0];
+
+        $this->client->jsonRequest('GET', $url, server: [
+            'HTTP_AUTHORIZATION' => 'Bearer '.$token->getValue(),
+        ]);
+
+        self::assertResponseStatusCodeSame(200);
+        $data = json_decode($this->client->getResponse()->getContent());
+
+        self::assertEquals('newuser', $data->login);
+        self::assertEquals('newuser@example.com', $data->email);
+        self::assertEquals('$name', $data->firstname);
+        self::assertEquals('$lastname', $data->lastname);
+        self::assertFalse(isset($data->password));
+    }
+
+    public function testCurrentBadToken(): void
+    {
+        $url = '/api/users';
+
+        $this->testLoginNormal();
+
+        $this->client->jsonRequest('GET', $url, server: [
+            'HTTP_AUTHORIZATION' => 'Bearer LSkdfT99999999999999999999999999TlZ6sMJ5wVc',
+        ]);
+
+        self::assertResponseStatusCodeSame(401);
+    }
+
+    public function testCurrentMissingToken(): void
+    {
+        $url = '/api/users';
+
+        $this->testLoginNormal();
+
+        $this->client->jsonRequest('GET', $url);
+        self::assertResponseStatusCodeSame(401);
     }
 }
