@@ -348,11 +348,8 @@
 		},
 		{
 			"name": "/api/cart/validate",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -486,9 +483,6 @@
 		{
 			"name": "/api/register",
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "POST",
 				"header": [
 					{
@@ -527,9 +521,6 @@
 		{
 			"name": "/api/login",
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "POST",
 				"header": [
 					{
@@ -559,27 +550,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "/api/users",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{API_URL}}/api/users",
-					"host": [
-						"{{API_URL}}"
-					],
-					"path": [
-						"api",
-						"users"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"auth": {
@@ -587,43 +557,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{token}}",
-				"type": "string"
-			}
-		]
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "token",
-			"value": "LSkdfTstibL6eQd2o3rMadaKSlR8HpDoTlZ6sMJ5wVc"
-		}
-	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "tOVaXy1Ics2Em89pefioXs6-f4blClaQ8rHQRZXpRrc",
+				"value": "0_PO_xh6_103Nt_mX865C5xgjiODKfj_vBtFv-_gffk",
 				"type": "string"
 			}
 		]
@@ -651,7 +585,7 @@
 	"variable": [
 		{
 			"key": "API_URL",
-			"value": "http://127.0.0.1:44081",
+			"value": "http://127.0.0.1:44571",
 			"type": "default"
 		},
 		{
