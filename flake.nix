@@ -11,8 +11,11 @@
   let
     pkgs = nixpkgs.legacyPackages.${system};
     php = pkgs.php82.buildEnv {
+      extensions = { all, enabled }: with all; enabled ++ [ pkgs.php82.extensions.xdebug ];
       extraConfig = ''
         short_open_tag = off
+        zend_extension = xdebug
+        xdebug.mode = develop,coverage,debug,gcstats,profile,trace
       '';
     };
 
@@ -33,6 +36,7 @@
           languages.php = {
             enable = true;
             package = php;
+            extensions = [ "xdebug" "jack" ];
           };
 
           services.mysql = {
