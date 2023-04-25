@@ -2,20 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\OrderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ApiOrderController extends AbstractController
 {
     // Récupérer toutes les commandes de l'utilisateur actuel /api/orders/ – AUTHED
-    // A MODIFIER AVEC LE USER CONNECTE
     #[Route('/api/orders', name: 'app_get_order_json', methods: ['GET'])]
-    public function orderList(SerializerInterface $serializer, OrderRepository $orderRepository): JsonResponse
+    public function orderList(SerializerInterface $serializer, OrderRepository $orderRepository, #[CurrentUser] ?User $user): JsonResponse
     {
-        $userOrders = $orderRepository->findBy(['applicant' => 1]);
+        $userOrders = $orderRepository->findBy(['applicant' => $user]);
         $json = $serializer->serialize($userOrders, 'json', ['groups' => 'order_list']);
 
         return new JsonResponse($json, 200, [], true);

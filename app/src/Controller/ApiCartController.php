@@ -13,13 +13,18 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class ApiCartController extends AbstractController
 {
     // Ajouter un produit au panier. /api/carts/{productId} – AUTHED
     #[Route('/api/carts/{productId}', name: 'app_add_product_cart_json', methods: ['POST'])]
-    public function addProductCart($productId, EntityManagerInterface $em, CartRepository $cartRepository, $userId = 1): JsonResponse
+    public function addProductCart($productId, EntityManagerInterface $em, CartRepository $cartRepository, #[CurrentUser] ?User $user): JsonResponse
     {
+        if ($productId = 'validate') {
+            return $this->validateCart($em, $cartRepository, $user);
+        }
+
         $product = $em->getRepository(Product::class)->find($productId);
         if (!$product) {
             return new JsonResponse(['erreur' => "Product $productId not found"], 404);
@@ -29,7 +34,7 @@ class ApiCartController extends AbstractController
         if (!$cart) {
             $cart = new Cart();
             $cart->setTotalPrice(0);
-            $cart->setUser($em->getReference(User::class, $userId));
+            $cart->setUser($user);
             $em->persist($cart);
             $em->flush();
         }
@@ -66,12 +71,12 @@ class ApiCartController extends AbstractController
 
     // Voir l'état du panier /api/carts/{productId} – AUTHED
     #[Route('/api/carts', name: 'app_state_cart_json', methods: ['GET'])]
-    public function CartId(CartRepository $cartRepository): JsonResponse
+    public function CartId(CartRepository $cartRepository, #[CurrentUser] ?User $user): JsonResponse
     {
         $total = 0;
-        // Récupérer le panier de l'utilisateur
-        /* $cart = $cartRepository->findOneBy(['user' => $this->getUser()]); */
-        $cart = $cartRepository->findOneBy([], ['id' => 'desc']);
+
+        $user = $this->getUser();
+        $cart = $cartRepository->findOneBy(['user' => $user]);
 
         if (!$cart) {
             return new JsonResponse(['error' => 'Cart was not found'], 404);
@@ -104,14 +109,10 @@ class ApiCartController extends AbstractController
     }
 
     // Validation du panier (convertir le panier en commande) /api/carts/validate – AUTHED
-    #[Route('/api/cart/validate', name: 'app_validate_cart_json', methods: ['POST'])]
-    public function validateCart(EntityManagerInterface $em, CartRepository $cartRepository): JsonResponse
+    private function validateCart(EntityManagerInterface $em, CartRepository $cartRepository, #[CurrentUser] ?User $user): JsonResponse
     {
         $total = 0;
-        $user = 1;
-        $cart = $cartRepository->findOneBy(['user' => $user]);
-        // Récupérer le panier de l'utilisateur
-        /*  $cart = $cartRepository->findOneBy(['user' => $this->getUser()]); */
+        $user = $this->getUser();
         $cart = $cartRepository->findOneBy(['user' => $user]);
 
         if (!$cart) {
@@ -119,7 +120,7 @@ class ApiCartController extends AbstractController
         }
 
         $order = new Order();
-        /*  $order->setApplicant(1); */
+        $order->setApplicant($user);
         $order->setCreatedAt(new \DateTimeImmutable());
         $em->persist($order);
         $em->flush();
