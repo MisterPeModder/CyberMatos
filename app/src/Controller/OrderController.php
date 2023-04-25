@@ -28,14 +28,14 @@ class OrderController extends AbstractController
     #[Route('/{id}', name: 'app_order_delete', methods: ['POST'])]
     public function delete(Request $request, Order $order, OrderRepository $orderRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $order->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->request->get('_token'))) {
             $orderRepository->remove($order, true);
         }
 
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    # editer une commande
+    // editer une commande
     #[Route('/{id}/edit', name: 'app_order_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Order $order, OrderRepository $orderRepository): Response
     {
@@ -54,7 +54,7 @@ class OrderController extends AbstractController
         ]);
     }
 
-    # voir mon panier de session
+    // voir mon panier de session
     #[Route('/panier', name: 'app_order_show', methods: ['GET'])]
     public function show(SessionInterface $session, ProductRepository $productRepository)
     {

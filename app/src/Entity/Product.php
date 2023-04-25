@@ -44,7 +44,6 @@ class Product
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-
     public function __construct()
     {
         $this->orders = new ArrayCollection();
