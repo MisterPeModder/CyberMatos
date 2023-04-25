@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use App\Repository\UserRepository;
 use App\Validator\ActuallyNotBlank;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +87,7 @@ class ApiUserController extends AbstractController
     }
 
     #[Route('/users', name: 'get_current_user', methods: ['GET'])]
-    public function users(#[CurrentUser] ?User $user): JsonResponse
+    public function getCurrentUser(#[CurrentUser] ?User $user): JsonResponse
     {
         return new JsonResponse([
             'login' => $user->getLogin(),
@@ -94,5 +95,55 @@ class ApiUserController extends AbstractController
             'firstname' => $user->getFirstname(),
             'lastname' => $user->getLastname(),
         ], 200);
+    }
+
+    #[Route('/users', name: 'update_current_user', methods: ['PATCH'])]
+    public function updateCurrentUser(#[CurrentUser] ?User $user, Request $request, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator, UserRepository $userRepository): JsonResponse
+    {
+        try {
+            $login = $request->get('login');
+            $password = $request->get('password');
+            $email = $request->get('email');
+            $firstname = $request->get('firstname');
+            $lastname = $request->get('lastname');
+        } catch (\Exception $exception) {
+            return new JsonErrorResponse($exception);
+        }
+
+        $errors = $validator->validate([
+            'login' => $login,
+            'password' => $password,
+            'email' => $email,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+        ], new Assert\Collection([
+            'login' => new ActuallyNotBlank([], ignoreNull: true),
+            'password' => new ActuallyNotBlank([], ignoreNull: true),
+            'email' => new Assert\Sequentially([
+                new Assert\Email(),
+                new ActuallyNotBlank([], ignoreNull: true),
+            ]),
+            'firstname' => new ActuallyNotBlank([], ignoreNull: true),
+            'lastname' => new ActuallyNotBlank([], ignoreNull: true),
+        ]));
+        if (count($errors) > 0) {
+            return new JsonErrorResponse((string) $errors);
+        }
+
+        $user->setLogin($login ?? $user->getLogin());
+        $user->setEmail($email ?? $user->getEmail());
+        $user->setFirstname($firstname ?? $user->getFirstname());
+        $user->setLastname($lastname ?? $user->getLastname());
+
+        if (null !== $password) {
+            $user->setPassword($passwordHasher->hashPassword($user, $password));
+        }
+        try {
+            $userRepository->save($user, true);
+        } /* @noinspection PhpRedundantCatchClauseInspection */ catch (UniqueConstraintViolationException) {
+            return new JsonErrorResponse('Login already used', Response::HTTP_CONFLICT);
+        }
+
+        return new JsonResponse(null, 200);
     }
 }

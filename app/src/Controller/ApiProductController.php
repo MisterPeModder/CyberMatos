@@ -61,7 +61,7 @@ class ApiProductController extends AbstractController
     }
 
     // Modifier un produit /api/products/{productId} – AUTHED
-    #[Route('/api/products/{id}', name: 'app_edit_product_json', methods: ['PUT'])]
+    #[Route('/api/products/{id}', name: 'app_edit_product_json', methods: ['PUT', 'PATCH'])]
     public function editProductId($id, ProductRepository $productRepository, SerializerInterface $serializer, EntityManagerInterface $em, Request $request): JsonResponse
     {
         $product = $productRepository->find($id);

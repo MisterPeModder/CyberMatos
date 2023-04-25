@@ -16,5 +16,13 @@ class ActuallyNotBlank extends Constraint
      * Any public properties become valid options for the annotation.
      * Then, use these in your validator class.
      */
-    public $message = 'The value "{{ string }}" must not be blank.';
+    public string $message = 'The value "{{ string }}" must not be blank.';
+    public string $ignoreNull;
+
+    public function __construct(array $options = null, string $ignoreNull = null, array $groups = null, mixed $payload = null)
+    {
+        parent::__construct($options ?? [], $groups, $payload);
+
+        $this->ignoreNull = $ignoreNull ?? $this->ignoreNull ?? false;
+    }
 }
