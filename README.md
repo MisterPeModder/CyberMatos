@@ -66,50 +66,7 @@ symfony console doctrine:migrations:migrate -n --env=test
 ./bin/phpunit
 ```
 
-## Application Structure
+## Documentation
 
-### Api routes
-
-List of API routes with JSON content type
-
-Retrieve a product or the list of products
-
-✔️ **/api/products**  
-✔️ **/api/products/{productId}**
-
-```
-{
-"id": 1 ,
-"name": "Item 3000" ,
-"description": "Best item in the shop !" ,
-"photo": "image.png" ,
-"price": 13.37
-}
-```
-
-### Entity Relationship Diagrams
-
-```mermaid
-erDiagram
-    USER ||--|{ ORDER : OneToMany
-    USER {
-      id int
-      first_name varchar
-      last_name varchar
-      email varchar
-      password varchar
-      created_at timestamp
-    }
-    ORDER }|--|{ PRODUCT : ManyToMany
-    ORDER {
-      id int
-      created_at timestamp
-    }
-    PRODUCT {
-      id int
-      name varchar
-      description varchar
-      photo varchar
-      created_at timestamp
-    }
-```
+-> Postman collection : [e-commerce.postman](/docs/e-commerce.postman_collection.json)  
+-> Documentation API : [documentation](/docs/Documentation.md)
