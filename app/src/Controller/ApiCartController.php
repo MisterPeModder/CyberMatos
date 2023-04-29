@@ -21,8 +21,12 @@ class ApiCartController extends AbstractController
     #[Route('/api/carts/{productId}', name: 'app_add_product_cart_json', methods: ['POST'])]
     public function addProductCart($productId, EntityManagerInterface $em, CartRepository $cartRepository, #[CurrentUser] ?User $user): JsonResponse
     {
-        if ($productId = 'validate') {
+        if ('validate' == $productId) {
             return $this->validateCart($em, $cartRepository, $user);
+        }
+
+        if (!is_numeric($productId)) {
+            return new JsonResponse(['error' => 'Product not found'], 404);
         }
 
         $product = $em->getRepository(Product::class)->find($productId);
@@ -61,12 +65,16 @@ class ApiCartController extends AbstractController
     public function deleteProductCartId($productId, EntityManagerInterface $em, CartProductRepository $cartProductRepository): JsonResponse
     {
         $cartProducts = $cartProductRepository->findBy(['product' => $productId]);
+        if (!$cartProducts) {
+            return new JsonResponse(['error' => "The product $productId was not found"], 404);
+        }
         foreach ($cartProducts as $cartProduct) {
             $em->remove($cartProduct);
         }
+
         $em->flush();
 
-        return new JsonResponse(['message' => 'Product removed from cart.']);
+        return new JsonResponse(['message' => 'Product removed from cart.', 200]);
     }
 
     // Voir l'état du panier /api/carts/{productId} – AUTHED

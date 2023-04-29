@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+/* use App\Validator\ActuallyNotBlank; */
+
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,10 +22,14 @@ class Product
 
     #[Groups(['order_list', 'product_light', 'cart_product'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'The value name must not be blank.')]
+    #[Assert\Type('string')]
     private ?string $name = null;
 
     #[Groups(['order_list', 'product_light'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'The value description must not be blank.')]
+    #[Assert\Type('string')]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -34,13 +40,16 @@ class Product
 
     #[Groups(['order_list', 'product_light', 'cart_product'])]
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'The value price must not be blank.')]
+    #[Assert\Type('float')]
     private ?float $price = null;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: CartProduct::class)]
     private Collection $cartProducts;
 
     #[Groups(['order_list', 'product_light', 'cart_product'])]
+    #[Assert\NotBlank(message: 'The value photo must not be blank.')]
+    #[Assert\Type('string')]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 

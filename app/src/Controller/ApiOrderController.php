@@ -27,6 +27,11 @@ class ApiOrderController extends AbstractController
     public function orderStore($id, SerializerInterface $serializer, OrderRepository $orderRepository): JsonResponse
     {
         $orderList = $orderRepository->find($id);
+
+        if (!$orderList) {
+            return new JsonResponse(['error' => "Order $id was not found"], 404);
+        }
+
         $json = $serializer->serialize($orderList, 'json', ['groups' => 'order_list']);
 
         return new JsonResponse($json, 200, [], true);

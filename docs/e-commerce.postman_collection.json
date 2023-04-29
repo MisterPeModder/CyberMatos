@@ -232,17 +232,22 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{}"
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
-					"raw": "{{API_URL}}/api/carts/2",
+					"raw": "{{API_URL}}/api/carts/3",
 					"host": [
 						"{{API_URL}}"
 					],
 					"path": [
 						"api",
 						"carts",
-						"2"
+						"3"
 					]
 				}
 			},
@@ -616,8 +621,34 @@
 	],
 	"variable": [
 		{
-			"key": "token",
-			"value": "4hc9d0AaaWzWlTCsUhL5N75iqUOKOFO4yR6dDUWEgKg"
+			"key": "API_URL",
+			"value": "http://127.0.0.1:",
+			"type": "default"
+		},
+		{
+			"key": "userLogin",
+			"value": "Mike",
+			"type": "default"
+		},
+		{
+			"key": "userPassword",
+			"value": "1234",
+			"type": "default"
+		},
+		{
+			"key": "userEmail",
+			"value": "mike@tech.fr",
+			"type": "default"
+		},
+		{
+			"key": "userFirstName",
+			"value": "Mike",
+			"type": "default"
+		},
+		{
+			"key": "userLastName",
+			"value": "Tech",
+			"type": "default"
 		}
 	]
 }
