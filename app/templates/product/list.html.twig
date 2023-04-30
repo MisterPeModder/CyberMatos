@@ -6,7 +6,8 @@
 {% block body %}
 	<h1>Catalogue Produit</h1>
 
-	<img src={{ asset('icon/panier.png') }} width="50px" alt=""><a href="/order/panier" class="card-link">Voir mon panier</a>
+	<img src={{ asset('icon/panier.png') }} width="50px" alt=""><a style="margin-right:3rem" href="/order/panier" class="card-link">Voir mon panier</a>
+	<a class="waves-effect waves-light btn" href="{{ path('app_product_new') }}">Créer un produit</a><br>
 
 	<table class="table">
 		<thead>
@@ -14,31 +15,32 @@
 				<th>Nom</th>
 				<th>Description</th>
 				<th>Prix</th>
-				<th>Image</th>
-				<th>Créé</th>
-				<th>actions</th>
+				<th>Photo</th>
+				<th>Actions</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for product in products %}
 
 				<tr>
-					{# <td>{{ product.id }}</td> #}
 					<td>{{ product.name }}</td>
 					<td>{{ product.description }}&nbsp;</td>
-					<td>{{ product.price }}€</td>
+					<td>
+						<h4>
+							<strong style="color:#1a6ace;">{{ product.price }}&nbsp;€</strong>
+						</h4>
+					</td>
+					<td><img src="{{ asset(product.photo) }}" width="150px" alt=""></td>
+					<td>
+						<a href="{{ path('app_product_show', {'id': product.id}) }}">En savoir plus</a>
+						<a href="{{ path('app_product_edit', {'id': product.id}) }}">Modifier</a>
+					</td>
 				</tr>
-			</td>
-			<td><img src="{{ asset(product.photo) }}" width="150px" alt=""></td>
-			<td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-			{# 	<td>
-																												<a href="{{ path('app_product_show', {'id': product.id}) }}">En savoir plus</a>
-																												<a href="{{ path('app_product_edit', {'id': product.id}) }}">Modifier</a>
-																											</td> #}
+			</tbody>
 		</tbody>
 	</tr>
 {% else %}
 	<tr>
 		<td colspan="6">no records found</td>
 	</tr>
-{% endfor %}</tbody></table><a href="{{ path('app_product_new') }}">Créer un produit</a><br>{% endblock %}
+{% endfor %}</tbody></table><div style="margin-bottom: 5rem"></div>{% endblock %}
