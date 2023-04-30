@@ -9,10 +9,6 @@
 	<table class="table">
 		<tbody>
 			<tr>
-				<th>Id</th>
-				<td>{{ product.id }}</td>
-			</tr>
-			<tr>
 				<th>Nom</th>
 				<td>{{ product.name }}</td>
 			</tr>
@@ -30,14 +26,32 @@
 			</tr>
 		</tbody>
 	</table>
+	<div class="container">
+		<div class="row">
+			<div class="col s4">
+				<a href="{{ path('app_product_list') }}">Retour au catalogue
+				</a>
+			</div>
+			<div class="col s2">
+				<a href="{{ path('app_product_edit', {'id': product.id}) }}">
+					Modifier
+				</a><br>
+			</div>
+			<div class="col s2">
+				<a href="{{ path('app_product_json', {'id': product.id}) }}">
+					{JSON}
+				</a>
+			</div>
+			<form class="col s2" method="POST" action="{{ path('app_add_to_cart', {'id': product.id}) }}">
+				<button type="submit" class="btn btn-primary">
+					<i class="material-icons">add_shopping_cart</i>
+					Ajouter au panier
+				</button>
+			</form>
 
-	<a href="{{ path('app_product_list') }}">Retour au catalogue</a>
 
-	<a href="{{ path('app_product_edit', {'id': product.id}) }}">Modifier</a><br>
-	<a href="{{ path('app_product_json', {'id': product.id}) }}">{JSON}</a>
+		</div>
+	</div>
 
-	<form method="POST" action="{{ path('app_add_to_cart', {'id': product.id}) }}">
-		<button type="submit" class="btn btn-primary">Ajouter au panier</button>
-	</form>
 
 {% endblock %}
